@@ -10,18 +10,6 @@ def main():
     
     items = result['items'][:-1]
 
-    """
-    item_list = []
-    for item in items:
-        if 'score' in item:
-            item['score'] = int(item['score'].split(' ')[0])
-            if not item_list:
-                item_list.append(item)
-            else:
-                if item['score'] > item_list[-1]['score']:
-                    item_list.append(item)
-    """
-
     reddit = praw.Reddit(user_agent='HackerNews bot by /u/cetamega')
     reddit.login('cetamega', 'Nuo4D%!Kt%$e')
 
@@ -42,25 +30,40 @@ def main():
             print e
             pass
 
-def get_subreddit(title):
-    
-    if 'osx' in title or 'apple' in title or 'steve jobs' in title or 'Steve Jobs' in title:
-        return 'apple'
-        
-    if 'python' in title or 'pycon' in title:
-        return 'python'
+def get_subreddit(original_title):
 
-    if '.js' in title or 'javascript' in title or 'jQuery' in title:
-        return 'webdev'
+    title = original_title.lower()
 
-    if 'linux' in title or 'debian' in title or 'redhat' in title or 'linus' in title:
-        return 'linux'
+    apple = ['osx', 'apple', 'macintosh', 'steve jobs', 'woz']
+    python = ['python', 'pycon', 'guido van rossum']
+    webdev = ['.js', 'javascript', 'jquery']
+    linux = ['linux', 'debian', 'redhat', 'linus', 'torvalds']
+    programming = ['c++', 'programm']
+    gaming = ['playstation', 'xbox', 'wii', 'nintendo']
 
-    if 'C++' in title or 'programming' in title or 'programmer' in title:
-        return 'programming'
+    for word in apple:
+        if word in title:
+            return 'apple'
 
-    if 'playstation' in title or 'xbox' in title or 'wii' in title:
-        return 'gaming'
+    for word in python:
+        if word in title:
+            return 'python'
+
+    for word in webdev:
+        if word in title:
+            return 'webdev'
+
+    for word in linux:
+        if word in title:
+            return 'linux'
+
+    for word in programming:
+        if word in title:
+            return 'programming'
+
+    for word in gaming:
+        if word in title:
+            return 'gaming'
 
     return 'technology'
     
