@@ -1,4 +1,4 @@
-import BeautifulSoup
+#import BeautifulSoup
 import praw
 import json
 import urllib
@@ -30,12 +30,13 @@ def main():
         if link_submitted:
             return
         try:
-            submission = list(reddit.info(url=str(link['url'])))
-            if not submission:
-                print "Submitting link: %s" % link['url']
-                subreddit = get_subreddit(str(link['title']))
-                resp = reddit.submit(subreddit, str(link['title']), url=str(link['url']))    
-                link_submitted = True
+            if not 'item?id=' in link['url']:
+                submission = list(reddit.info(url=str(link['url'])))
+                if not submission:
+                    print "Submitting link: %s" % link['url']
+                    subreddit = get_subreddit(str(link['title']))
+                    resp = reddit.submit(subreddit, str(link['title']), url=str(link['url']))
+                    link_submitted = True
 
         except Exception, e:
             print e
@@ -43,11 +44,17 @@ def main():
 
 def get_subreddit(title):
     
-    if 'osx' in title or 'apple' in title:
+    if 'osx' in title or 'apple' in title or 'steve jobs' in title or 'Steve Jobs' in title:
         return 'apple'
         
     if 'python' in title or 'pycon' in title:
-        return 'python'    
+        return 'python'
+
+    if '.js' in title or 'javascript' in title or 'jQuery' in title:
+        return 'webdev'
+
+    if 'linux' in title or 'debian' in title or 'redhat' in title or 'linus' in title:
+        return 'linux'
 
     if 'C++' in title or 'programming' in title or 'programmer' in title:
         return 'programming'
