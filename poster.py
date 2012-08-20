@@ -1,12 +1,15 @@
-#import BeautifulSoup
+#imporst BeautifulSoup
 import praw
 import json
 import urllib
 
 def main():
 
-    url = "http://hndroidapi.appspot.com/news/format/json/page/?appid="
-    result = json.load(urllib.urlopen(url))
+    url = "http://api.ihackernews.com/page"
+    try:
+        result = json.load(urllib.urlopen(url))
+    except Exception, e:
+        return  
     
     items = result['items'][:-1]
 
@@ -18,7 +21,7 @@ def main():
         if link_submitted:
             return
         try:
-            if not 'item?id=' in link['url']:
+            if not 'item?id=' in link['url'] and not '/comments/' in link['url']:
                 submission = list(reddit.info(url=str(link['url'])))
                 if not submission:
                     print "Submitting link: %s" % link['url']
@@ -36,9 +39,9 @@ def get_subreddit(original_title):
 
     apple = ['osx', 'apple', 'macintosh', 'steve jobs', 'woz']
     python = ['python', 'pycon', 'guido van rossum']
-    webdev = ['.js', 'javascript', 'jquery']
+    # webdev = ['.js', 'javascript', 'jquery']
     linux = ['linux', 'debian', 'redhat', 'linus', 'torvalds']
-    programming = ['c++', 'programm']
+    programming = ['c++', 'programm', '.js', 'javascript', 'jquery', 'ruby']
     gaming = ['playstation', 'xbox', 'wii', 'nintendo']
 
     for word in apple:
@@ -49,9 +52,9 @@ def get_subreddit(original_title):
         if word in title:
             return 'python'
 
-    for word in webdev:
-        if word in title:
-            return 'webdev'
+#    for word in webdev:
+#        if word in title:
+#            return 'webdev'
 
     for word in linux:
         if word in title:
