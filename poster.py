@@ -1,26 +1,31 @@
-#imporst BeautifulSoup
 import praw
 import json
 import urllib
 
+REDDIT_USERNAME = ''
+REDDIT_PASSWORD = ''
+
 def main():
 
+    #Load an RSS feed of the Hacker News homepage.
     url = "http://api.ihackernews.com/page"
     try:
         result = json.load(urllib.urlopen(url))
     except Exception, e:
-        return  
+        return
     
     items = result['items'][:-1]
 
+    #Log in to Reddit
     reddit = praw.Reddit(user_agent='HackerNews bot by /u/cetamega')
-    reddit.login('cetamega', 'Nuo4D%!Kt%$e')
+    reddit.login(REDDIT_USERNAME, REDDIT_PASSWORD)
 
     link_submitted = False
     for link in items:
         if link_submitted:
             return
         try:
+            #Check to make sure the post is a link and not a post to another HN page. 
             if not 'item?id=' in link['url'] and not '/comments/' in link['url']:
                 submission = list(reddit.info(url=str(link['url'])))
                 if not submission:
@@ -39,7 +44,7 @@ def get_subreddit(original_title):
 
     apple = ['osx', 'apple', 'macintosh', 'steve jobs', 'woz']
     python = ['python', 'pycon', 'guido van rossum']
-    # webdev = ['.js', 'javascript', 'jquery']
+    webdev = ['.js', 'javascript', 'jquery']
     linux = ['linux', 'debian', 'redhat', 'linus', 'torvalds']
     programming = ['c++', 'programm', '.js', 'javascript', 'jquery', 'ruby']
     gaming = ['playstation', 'xbox', 'wii', 'nintendo']
@@ -52,9 +57,9 @@ def get_subreddit(original_title):
         if word in title:
             return 'python'
 
-#    for word in webdev:
-#        if word in title:
-#            return 'webdev'
+    for word in webdev:
+        if word in title:
+            return 'webdev'
 
     for word in linux:
         if word in title:
