@@ -2,11 +2,18 @@ import praw
 import json
 import urllib
 
+import settingslocal
+
 REDDIT_USERNAME = ''
 REDDIT_PASSWORD = ''
 
-def main():
+try:
+    from settingslocal import *
+except ImportError:
+    pass
 
+def main():
+    print 'starting'
     #Load an RSS feed of the Hacker News homepage.
     url = "http://api.ihackernews.com/page"
     try:
@@ -15,11 +22,9 @@ def main():
         return
     
     items = result['items'][:-1]
-
     #Log in to Reddit
-    reddit = praw.Reddit(user_agent='HackerNews bot by /u/cetamega')
+    reddit = praw.Reddit(user_agent='HackerNews bot by /u/mpdavis')
     reddit.login(REDDIT_USERNAME, REDDIT_PASSWORD)
-
     link_submitted = False
     for link in items:
         if link_submitted:
@@ -27,10 +32,10 @@ def main():
         try:
             #Check to make sure the post is a link and not a post to another HN page. 
             if not 'item?id=' in link['url'] and not '/comments/' in link['url']:
-                submission = list(reddit.info(url=str(link['url'])))
+                submission = list(reddit.get_info(url=str(link['url'])))
                 if not submission:
-                    print "Submitting link: %s" % link['url']
                     subreddit = get_subreddit(str(link['title']))
+                    print "Submitting link to %s: %s" % (subreddit, link['url'])
                     resp = reddit.submit(subreddit, str(link['title']), url=str(link['url']))
                     link_submitted = True
 
